@@ -23,7 +23,14 @@ export default async function handler(req, res) {
     const productString = MOCK_SPECIAL_PRODUCTS_DATA.map((product) => `${product.name} 金額＄ ${product.price}`).join(`\n`)
     client.broadcast({
       type: 'text',
-      text: `本月即將過期商品清單如下：\n\n ${productString}`,
+      text: `本月 特價商品 $ 清單如下：\n\n ${productString}`,
+      emojis: [
+        {
+          index: 8, // index 代表 $ 符號所在的的位置，以上面為例：『本月 特價商品 $』 前字號位於第 8 個字元
+          productId: '5ac2213e040ab15980c9b447', // Doc: https://developers.line.biz/en/docs/messaging-api/emoji-list/
+          emojiId: '005',
+        },
+      ],
     })
 
     res.status(200).end()
