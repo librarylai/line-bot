@@ -1,8 +1,9 @@
 import { MOCK_SPECIAL_PRODUCTS_DATA } from '@/src/constants/products'
 import { LINE_CONFIG } from '@/src/constants/line'
-import { Client } from '@line/bot-sdk'
+import { Client, middleware } from '@line/bot-sdk'
+export const client = new Client(LINE_CONFIG)
 
-let client = new Client(LINE_CONFIG)
+export const lineMiddleware = middleware(LINE_CONFIG)
 
 export const getRandomSpecialProductsMessage = async (event) => {
   const randomProduct = MOCK_SPECIAL_PRODUCTS_DATA[Math.floor(Math.random() * MOCK_SPECIAL_PRODUCTS_DATA.length)]

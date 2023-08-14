@@ -1,6 +1,4 @@
-import { middleware } from '@line/bot-sdk'
-import { LINE_CONFIG } from '@/src/constants/line'
-import { getRandomSpecialProductsMessage } from '@/src/services/lineBot'
+import { getRandomSpecialProductsMessage, lineMiddleware } from '@/src/services/lineBot'
 
 /**
  * 這邊使用 Next.js 12 版本的 API Routes
@@ -34,7 +32,7 @@ function handleLineEvent(event) {
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     // Validate request
-    await validateLineSignMiddleware(req, res, middleware(LINE_CONFIG))
+    await validateLineSignMiddleware(req, res, lineMiddleware)
 
     // Handle events
     try {

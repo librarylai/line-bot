@@ -1,5 +1,3 @@
-import { Client } from '@line/bot-sdk'
-import { LINE_CONFIG } from '@/src/constants/line'
 import { getSpecialProductsListBroadcast } from '@/src/services/lineBot'
 
 export default async function handler(req, res) {
