@@ -1,8 +1,11 @@
 import { MOCK_SPECIAL_PRODUCTS_DATA } from '@/src/constants/products'
 import { LINE_CONFIG } from '@/src/constants/line'
 import { Client, middleware } from '@line/bot-sdk'
+
+// client 主要是用來對 LINE Bot 進行操作。ex. 回覆、廣播
 export const client = new Client(LINE_CONFIG)
 
+// middleware 是來驗證 webhook 回傳時的 x-line-signature 是否合法。
 export const lineMiddleware = middleware(LINE_CONFIG)
 
 export const getRandomSpecialProductsMessage = async (event) => {

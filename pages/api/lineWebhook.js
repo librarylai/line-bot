@@ -1,5 +1,4 @@
-import { getRandomSpecialProductsMessage, lineMiddleware } from '@/src/services/lineBot'
-
+import { getRandomSpecialProductsMessage, lineMiddleware } from '@/src/services/lineBotService'
 /**
  * 這邊使用 Next.js 12 版本的 API Routes
  * 因為在 Next13 API Route Handlers 的 req.headers 會是 HeaderList（new Map 結構） 而不是 Object，因此導致 line.middleware 內的 req.headers[Types.LINE_SIGNATURE_HTTP_HEADER_NAME] 取不到值
@@ -19,7 +18,7 @@ async function validateLineSignMiddleware(req, res, fn) {
     })
   })
 }
-
+// 依照收到的 message text 訊息，來使用對應的 Service 回應。
 function handleLineEvent(event) {
   const messageText = event.message.text
   switch (messageText) {
@@ -33,13 +32,11 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     // Validate request
     await validateLineSignMiddleware(req, res, lineMiddleware)
-
     // Handle events
     try {
       const events = req?.body?.events
       Promise.all(events?.map(handleLineEvent))
         .then((result) => {
-          console.log('result', result)
           res.status(200).end()
         })
         .catch((err) => {
