@@ -295,7 +295,7 @@ export const MOCK_SPECIAL_PRODUCTS_DATA = [
 
 這邊為了方便 DEMO 所以有調整一下官方帳號的選單內容，關於如何設定可以再回去看上一篇呦！！
 
-<img width='40%' src='https://i.imgur.com/sAbADEZ.gif'/>
+![](https://i.imgur.com/sAbADEZ.gif)
 
 ## LINE Bot 廣播通知
 
