@@ -6,11 +6,12 @@ import { getRandomSpecialProductsMessage, lineMiddleware } from '@/src/services/
  */
 export const config = {
   api: {
-    bodyParser: false, // Necessary for line.middleware
+    bodyParser: false, // line middleware 內會去轉換 req.body，因此這邊不需要再進行 bodyParser
   },
 }
 
 /* Reference: https://zenn.dev/pinalto/articles/79dc21060a8c95 */
+// 呼叫 LINE SDK 的 middleware fn 來驗證 x-line-signature 是否合法
 async function validateLineSignMiddleware(req, res, fn) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -22,6 +23,8 @@ async function validateLineSignMiddleware(req, res, fn) {
 function handleLineEvent(event) {
   const messageText = event.message.text
   switch (messageText) {
+    // 如果今天收到使用者輸入文字為：`隨機特價商品`
+    // 則呼叫 getRandomSpecialProductsMessage 取得商品資訊回覆給使用者。
     case '隨機特價商品':
       return getRandomSpecialProductsMessage(event)
   }

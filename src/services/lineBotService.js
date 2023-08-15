@@ -16,7 +16,7 @@ export const getRandomSpecialProductsMessage = async (event) => {
       text: `特價商品 $ 清單如下：\n\n ${randomProduct.name} 金額＄ ${randomProduct.price}`,
       emojis: [
         {
-          index: 5,
+          index: 5, // 看 $ 這個符號位於文字中的第幾個位子 (index 從 0 開始)
           productId: '5ac21a8c040ab15980c9b43f',
           emojiId: '067',
         },
