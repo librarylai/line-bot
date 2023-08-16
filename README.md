@@ -300,6 +300,78 @@ export const MOCK_SPECIAL_PRODUCTS_DATA = [
 
 ## LINE Bot 廣播通知
 
+上面的回覆訊息主要是『回應給單一的使用者』，而有時我們會需要一次『群發訊息給所有加入該官方帳號的使用者』，這時就需要用到 Broadcast(廣播通知) 的方式來通知全部的人。
+
+舉例來說，像是電商相關的網站就時常會使用群發信息來通知一些『優惠事項或是活動項目』...等資訊給客戶，而對於公司內部的操作人員則可以用來通知『商品即將在本月到期』....等資訊來提醒內部人員進行調整。
+
+> **實際案例：**
+> 筆者之前負責開發電商相關產品中就有一個功能是，每當月底時就會透過 LINE Bot 來提醒內部人員即將被下架的商品，並且將商品名稱、商品編號(ID)...等資訊一併在群發訊息(Text Message) 中來告知所有的後台操作人員。
+>
+> **這邊需要注意的是：Text Message 一次最多只能輸入 『5000 個字元』，因此當該月下架商品很多時，可能會碰到『被截斷』的問題，建議在發送前先計算一下字元，如果超過限制則拆成 Array 形式來發送多筆 Message**
+
+### 廣播訊息實作
+
+#### 1. 首先建立一支 `pages/api/lineExpireProductsBroadcast.js` 檔
+
+#### 2. 依照 Next.js API Route 格式寫上以下程式碼
+
+```javascript=
+/* pages/api/lineExpireProductsBroadcast.js */
+import { getExpireProductsListBroadcast } from '@/src/services/lineBotService'
+
+export default async function handler(req, res) {
+  if (req.method === 'POST') {
+    /* 透過  broadcast 對群裡所有人進行商品到期通知 */
+    getExpireProductsListBroadcast()
+      .then((result) => res.status(200).end())
+      .catch((err) => {
+        console.log(err)
+        res.status(500).end()
+      })
+  } else {
+    res.status(405).end()
+  }
+}
+
+```
+
+#### 攥寫群發訊息程式碼
+
+> 這邊一樣是寫在 `lineBotService` 這隻檔案中，因此相關 `import` 與 `client` ...等宣告程式碼這邊就不再貼上。
+
+這邊主要是用到 `client.broadcast` 這個 SDK 裡的 method 來幫我們做到群發通知的功能，Message 訊息也跟上面 `replyMessage` 一樣可以傳送多筆，只需要改成 Object Array 的方式即可。
+
+```javascript=
+/* src/services/lineBotService.js */
+export const getExpireProductsListBroadcast = async () => {
+  const productString = MOCK_SPECIAL_PRODUCTS_DATA.map(
+    (product) => `商品編號: ${product.id} , ${product.name} 金額＄ ${product.price}`
+  ).join(`\n`)
+  return client.broadcast({
+    type: 'text',
+    text: `本月 即將到期商品 $ 清單如下：\n\n${productString} \n\n請操作人員協助後續處理，謝謝！`,
+    emojis: [
+      {
+        index: 10, // index 代表 $ 符號所在的的位置，以上面為例：『本月 即將到期商品 $』 前字號位於第 10 個字元
+        productId: '5ac2213e040ab15980c9b447', // Doc: https://developers.line.biz/en/docs/messaging-api/emoji-list/
+        emojiId: '005',
+      },
+    ],
+  })
+}
+
+```
+
+### 成果展示
+
+這邊使用 [Postman](https://www.postman.com/) 來打模擬 Broadcast API 被呼叫時會發生的情況，可以看到當發送 API 後 LINE 官方帳號立馬就收到了我們剛在上面設定的『即將到期商品』訊息。
+
+![Imgur](https://i.imgur.com/cLzj2yj.gif)
+
+#### 以上就是本篇『LINE Bot 系列（二）用程式玩轉 LINE Bot』全部內容，簡單的透過 SDK 來自動發送 Message 到官方帳號中，之後也會再進一步玩一些其他功能，到時再麻煩多多指教，如有任何錯誤的地方也再麻煩告知，謝謝您的觀看。
+
+#### Github : [https://github.com/librarylai/line-bot](https://github.com/librarylai/line-bot)
+
 ## Reference
 
 1. [LINE Developers - Messaging API SDKs](https://developers.line.biz/en/docs/messaging-api/line-bot-sdk/)

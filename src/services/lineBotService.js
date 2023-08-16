@@ -30,14 +30,16 @@ export const getRandomSpecialProductsMessage = async (event) => {
   ])
 }
 
-export const getSpecialProductsListBroadcast = async () => {
-  const productString = MOCK_SPECIAL_PRODUCTS_DATA.map((product) => `${product.name} 金額＄ ${product.price}`).join(`\n`)
+export const getExpireProductsListBroadcast = async () => {
+  const productString = MOCK_SPECIAL_PRODUCTS_DATA.map(
+    (product) => `商品編號: ${product.id} , ${product.name} 金額＄ ${product.price}`
+  ).join(`\n`)
   return client.broadcast({
     type: 'text',
-    text: `本月 特價商品 $ 清單如下：\n\n${productString}`,
+    text: `本月 即將到期商品 $ 清單如下：\n\n${productString} \n\n請操作人員協助後續處理，謝謝！`,
     emojis: [
       {
-        index: 8, // index 代表 $ 符號所在的的位置，以上面為例：『本月 特價商品 $』 前字號位於第 8 個字元
+        index: 10, // index 代表 $ 符號所在的的位置，以上面為例：『本月 即將到期商品 $』 前字號位於第 10 個字元
         productId: '5ac2213e040ab15980c9b447', // Doc: https://developers.line.biz/en/docs/messaging-api/emoji-list/
         emojiId: '005',
       },
